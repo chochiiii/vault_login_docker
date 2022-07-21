@@ -1,0 +1,12 @@
+# docker 仓库相关
+docker_registry_addr: "myregistry.domain.com"
+docker_registry_ip: "10.0.1.48"
+
+
+# vault 相关
+VAULT_ADDR: "http://10.0.1.114:8200"
+vault_role_files: test-vault-*
+
+
+# 镜像相关
+docker_image: myregistry.domain.com/my-ubuntu

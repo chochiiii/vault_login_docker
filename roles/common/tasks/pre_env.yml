@@ -1,0 +1,62 @@
+---
+- name: 安装docker
+  yum: pkg=docker state=latest
+  ignore_errors: True
+
+- name: 启动docker
+  systemd: 
+    name: docker
+    state: started
+
+# 仅供演示用，可删除此步
+- name: 演示 - 安装sshpass
+  yum: pkg=sshpass state=latest 
+
+- name: 检查环境变量
+  shell: cat ~/.bashrc 
+  register: bashrc_result
+
+- name: 增加VAULT_ADDR环境变量
+  shell: echo {{ item }} >> ~/.bashrc; source ~/.bashrc 
+  when: bashrc_result.stdout.find('VAULT_ADDR') == -1
+  with_items:
+    - export VAULT_ADDR="{{VAULT_ADDR}}"
+
+- name: 演示 - 创建.ssh文件夹
+  file: 
+    path=/root/.ssh
+    state=directory
+
+- name: 演示 - 复制role-id到远程
+  copy:
+    src: files/config
+    dest: /root/.ssh/config
+
+# - name: 获取vault zip
+#   get_url: url=https://releases.hashicorp.com/vault/1.11.0/vault_1.11.0_linux_amd64.zip dest=/tmp/
+#   retries: 3
+#   delay: 3 
+
+- name: 演示 - 获取vault zip
+  shell: sshpass -p '123' scp 10.0.7.7:/root/vault_1.11.0_linux_amd64.zip /tmp/
+  ignore_errors: True
+
+- name: 安装unzip
+  yum: pkg=unzip state=latest 
+
+- name: 解压vault zip
+  shell: unzip -o /tmp/vault_1.11.0_linux_amd64.zip -d /usr/local/bin
+
+# - name: 下载工具，可能因网络问题卡顿导致任务失败
+#   get_url: url=https://github.com/morningconsult/docker-credential-vault-login/releases/download/v0.3.33/docker-credential-vault-login_0.3.33_Linux_x86_64.tar.gz dest=/tmp/docker-credential-vault-login_0.3.33_Linux_x86_64.tar.gz
+#   retries: 3
+#   delay: 3 
+
+- name: 解压docker-credential-vault-login
+  unarchive:
+    src: /tmp/docker-credential-vault-login_0.3.33_Linux_x86_64.tar.gz
+    remote_src: True
+    dest: /tmp
+
+- name: 移动login指令到相应位置
+  shell: mv /tmp/docker-credential-vault-login /usr/local/bin

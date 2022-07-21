@@ -1,0 +1,18 @@
+---
+- name: 拉取镜像
+  shell: docker pull {{docker_image}}
+
+# 方式2: docker_image模块，需pip install docker requests包 
+# 注意此处python包-docker需双端(client/server)安装且版本一致
+# - name: 安装python3
+#   yum: pkg=python3 state=latest
+
+# - name: 安装docker_image支持内容
+#   shell: pip3 install docker -i https://pypi.douban.com/simple
+    
+# - name: 官方模块拉取镜像
+#   docker_image:  
+#     name: "{{docker_image}}"
+#     source: pull
+#   vars:
+#     ansible_python_interpreter: /bin/python3

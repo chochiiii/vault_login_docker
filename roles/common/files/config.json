@@ -1,0 +1,6 @@
+{
+    "auths": {},
+    "credHelpers": {
+      "myregistry.domain.com": "vault-login"
+    }
+} 

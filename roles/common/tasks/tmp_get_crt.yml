@@ -1,0 +1,32 @@
+## ！！！！仅供演示用，获取ssl文件！！！！
+---
+- name: 演示 - 安装sshpass
+  yum: pkg=sshpass state=latest 
+
+- name: 检查hosts文件
+  shell: cat /etc/hosts
+  register: hosts_result
+
+- name: 修改hosts文件
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{docker_registry_ip}}   {{docker_registry_addr}}"
+  when: hosts_result.stdout.find('{{docker_registry_addr}}') == -1
+
+- name: 创建docker crt证书存储位置
+  file: 
+    path=/etc/docker/certs.d/{{docker_registry_addr}} 
+    state=directory
+
+- name: 获取crt证书
+  shell: sshpass -p '123' scp {{docker_registry_ip}}:/etc/docker/certs.d/myregistry.domain.com/myregistry.domain.com.crt /etc/docker/certs.d/{{docker_registry_addr}}
+
+- name: 演示 - 获取vault包
+  shell: sshpass -p '123' scp 10.0.7.7:/root/vault_1.11.0_linux_amd64.zip /tmp/
+
+- name: 安装unzip
+  yum: pkg=unzip state=latest 
+
+- name: 解压zip
+  shell: unzip -o /tmp/vault_1.11.0_linux_amd64.zip -d /usr/local/bin
+

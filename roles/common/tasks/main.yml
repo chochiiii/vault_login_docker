@@ -1,0 +1,12 @@
+---
+- name: 配置环境
+  import_tasks: pre_env.yml
+
+- name: 演示 - 获取docker crt证书
+  import_tasks: tmp_get_crt.yml
+
+- name: 配置vault以及docker-credential-vault-login
+  import_tasks: vault_config.yml
+
+- name: docker操作
+  import_tasks: handle_docker.yml

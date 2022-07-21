@@ -1,0 +1,21 @@
+# 用于vault docker等配置文件夹
+---
+- name: docker-vault-login配置文件夹
+  file: 
+    path=/etc/docker-credential-vault-login
+    state=directory
+
+- name: 复制role-id、secret-id到远程
+  copy:
+    src: "{{ item }}"
+    dest: /tmp/test-vault-role-id
+  with_fileglob:
+    - "{{ vault_role_files }}"
+
+# 多行文件建议采用shell
+- name: 移动vault配置文件到指定位置
+  copy: 
+    src: "{{ item }}"
+    dest: /etc/docker-credential-vault-login
+  with_fileglob:
+    - "{{ vault_role_files }}"
