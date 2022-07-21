@@ -54,7 +54,7 @@ vault_login_docker/
 4. 检查主机是否连接成功
 
     ```shell
-    $ ansible ping -i $(PWD)/inventories/hosts
+    $ ansible ping -i [目录]/inventories/hosts
     ```
 
 5. 修改相关配置文件
